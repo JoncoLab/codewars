@@ -1,4 +1,2 @@
-export declare const testCases: Array<
-  Record<'input' | 'expectedOutput', number[]>
->
-export default function solvePuzzle(clues: number[]): void
+declare const testCases: TestCase[]
+declare function solvePuzzle(clues: number[]): void

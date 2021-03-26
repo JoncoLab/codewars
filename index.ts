@@ -1,24 +1,10 @@
 import fs from 'fs'
 import readline from 'readline'
-
-interface TestCase {
-  input: unknown
-  expectedOutput: unknown
-}
-
-interface KataFile {
-  default: CallableFunction
-  testCases: Array<TestCase>
-}
+import runKata from './scripts/runKata'
 
 enum KataLang {
   JavaScript = 'JavaScript',
   TypeScript = 'TypeScript',
-}
-
-interface Kata {
-  name: string
-  lang: keyof typeof KataLang
 }
 
 const consoleStream = readline.createInterface({
@@ -38,14 +24,13 @@ const katas: Array<Kata> = kataFiles.map(kata => {
   }
 })
 
-function main(...args: string[]) {
+function main(...args: string[]): void | Promise<void> {
   let kataName: string,
     kataLang: keyof typeof KataLang,
     options: string[] = []
 
-  function getOptionValue(opt: string): string {
-    return args[args.indexOf(availableOptions[opt])]
-  }
+  const getOptionValue = (opt: string): string =>
+    args[args.indexOf(availableOptions[opt])]
 
   try {
     if (args.length) {
@@ -84,28 +69,5 @@ function main(...args: string[]) {
 
 main(...process.argv.slice(2))
 
-async function runKata(
-  kataName: string,
-  kataLang: keyof typeof KataLang,
-  options: string[]
-) {
-  console.log('\n\n------- Codewars Katas by JoncoLab -------\n')
-  console.log(`kata name: ${kataName}`)
-  console.log(`options: ${options}`)
-
-  try {
-    const { default: solve, testCases } = (await import(
-      `./katas/${kataName}.${kataLang === 'TypeScript' ? 'ts' : 'js'}`
-    )) as KataFile
-
-    solve(testCases[0].input)
-  } catch (err) {
-    console.error(err)
-    console.log(`No kata named "${kataName}" was found`)
-  }
-}
-
-// TODO: add TypeScript support
 // TODO: sriprs for creating katas (folder, index, codewars tests & source code, maybe description.md file)
 // TODO: investigate Codewars API docs
-// TODO: running a kata by passing it's name as an arg

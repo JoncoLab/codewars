@@ -1,18 +1,25 @@
 {
+  "ts-node": {
+    "compilerOptions": {
+      "typeRoots": ["./types", "./katas"]
+    },
+    "files": true
+  },
   "compilerOptions": {
     "experimentalDecorators": true,
     "strict": true,
-    "module": "none",
+    "module": "commonjs",
     "moduleResolution": "node",
-    "target": "es2020",
+    "target": "esnext",
     "lib": ["ES5", "ES6", "ESNext", "ES2020"],
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "allowJs": true,
-    "isolatedModules": false,
+    "isolatedModules": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
-  },
-  "exclude": ["node_modules", "**/node_modules/*", ".vscode"]
+    "allowSyntheticDefaultImports": true,
+    "typeRoots": ["./types", "./katas"],
+    "types": ["node"]
+  }
 }
