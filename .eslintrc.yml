@@ -1,0 +1,55 @@
+parser: '@typescript-eslint/parser'
+parserOptions:
+  ecmaVersion: 2020
+  sourceType: module
+  ecmaFeatures:
+    modules: true
+    generators: true
+    octalLiterals: true
+    unicodeCodePointEscapes: true
+env:
+  es6: true
+  commonjs: true
+  jest: true
+  node: true
+globals:
+  process: true
+extends:
+  - 'plugin:@typescript-eslint/recommended'
+  - 'plugin:prettier/recommended'
+plugins:
+  - 'only-warn'
+reportUnusedDisableDirectives: true
+settings:
+  indent:
+    - error
+    - 2
+    - SwitchCase: 1
+      VariableDecorator: 2
+      MemberExpression: 1
+      ArrayExpression: 1
+      ObjectExpression: 1
+      offsetTernaryExpressions: true
+      FunctionExpression:
+        parameters: 'first'
+      CallExpression:
+        arguments: 'first'
+rules:
+  prettier/prettier:
+    - warn
+    - trailingComma: es5
+      tabWidth: 2
+      semi: false
+      singleQuote: true
+      printWidth: 80
+      arrowParens: avoid
+    - usePrettierRc: true
+  linebreak-style:
+    - warn
+    - unix
+  quotes:
+    - warn
+    - single
+  semi:
+    - warn
+    - never

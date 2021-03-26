@@ -1,0 +1,23 @@
+{
+    "verbose": true,
+    "restartable": "r",
+    "ignore": [
+        ".git/",
+        "node_modules/",
+        ".vscode/",
+        "config/",
+        "*/**/*.{test,d}.{js,ts}"
+    ],
+    "watch": [
+        "index.ts",
+        "katas"
+    ],
+    "ext": "js,ts",
+    "execMap": {
+        "js": "node --harmony",
+        "ts": "node --harmony -r ts-node/register"
+    },
+    "env": {
+        "NODE_ENV": "development"
+    }
+}

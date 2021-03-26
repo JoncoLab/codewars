@@ -1,0 +1,33 @@
+{
+    "scripts": {
+        "dev": "yarn lint && yarn format && nodemon --",
+        "start": "yarn ts-node ./",
+        "format": "yarn prettier --write \"@(*/**/*.@(js|ts)|*.@(js|ts))\" && echo \n",
+        "lint": "yarn eslint '{*/**/,/}*.@(js|ts)' --fix"
+    },
+    "name": "katas",
+    "version": "1.0.0",
+    "description": "solutions and tests for codewars katas & helpers for you to focus on coding not setting up the env",
+    "main": "index.ts",
+    "author": "JoncoLab",
+    "license": "MIT",
+    "private": false,
+    "devDependencies": {
+        "@types/chai": "^4.2.15",
+        "@types/jest": "^26.0.21",
+        "@types/node": "^14.14.35",
+        "@types/nodemon": "^1.19.0",
+        "@typescript-eslint/eslint-plugin": "^4.19.0",
+        "@typescript-eslint/parser": "^4.19.0",
+        "chai": "^4.3.4",
+        "eslint": "^7.22.0",
+        "eslint-config-prettier": "^8.1.0",
+        "eslint-plugin-only-warn": "^1.0.2",
+        "eslint-plugin-prettier": "^3.3.1",
+        "jest": "^26.6.3",
+        "nodemon": "^2.0.7",
+        "prettier": "^2.2.1",
+        "ts-node": "^9.1.1",
+        "typescript": "^4.2.3"
+    }
+}

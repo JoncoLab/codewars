@@ -1,0 +1,7 @@
+# config files and external packages
+node_modules*
+*log
+build*
+
+# IDE settings
+.vscode*
