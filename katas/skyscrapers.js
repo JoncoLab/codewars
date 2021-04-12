@@ -1,4 +1,4 @@
-/* 
+/*
   * In a grid of 4 by 4 squares you want to place a skyscraper in each square with only some clues:
 
   * The height of the skyscrapers is between 1 and 4
@@ -12,12 +12,12 @@
   * function solvePuzzle(clues)
   * Pass the clues in an array of 16 items. This array contains the clues around the clock, index:
 
-  !  	  0	  1	  2   3	  
+  !  	  0	  1	  2   3
   ! 15	  	  	   	   4
   ! 14	  	  	  	   5
   ! 13	  	  	  	   6
   ! 12	  	  	  	   7
-  !  	  11	10	9	  8	  
+  !  	  11	10	9	  8
 
   * If no clue is available, add value `0`
   * Each puzzle has only one possible solution
@@ -54,6 +54,38 @@ export const testCases = [
  * @returns {number[][]} The first indexer is for the row, the second indexer for the column.
  */
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+
+// If the index of the clue is 5 then we're wroking with the right edge of the matrix
+// thus on this side it's true index is 1
+function getCluesEdgeIndex(clueIdx) {
+  return clueIdx % 4;
+}
+
+function getVectorDirection(clueIdx) {
+  return Math.floor(clueIdx / 4) % 2;
+}
+
+function getTopLevelMatrixIdx(clueIdx) {
+  const vectorDirection = getVectorDirection(clueIdx);
+
+  if (!!vectorDirection) {
+    if (clueIdx > 7) { // on the left edge
+      return Math.abs(getCluesEdgeIndex(clueIdx) - 3);  
+    }
+    return getCluesEdgeIndex(clueIdx); // on the right edge
+  }
+
+  if (clueIdx > 3) { // on the bottom edge
+    return 3;
+  }
+
+  return 0; // on the top edge
+}
+
+function matrixNavigation(clueIdx) {
+  const vectorDirection = getVectorDirection(clueIdx)
+}
+
 export default function solvePuzzle(clues) {
   const field = Array(4).fill(Array(4).fill('-'))
 
@@ -73,9 +105,8 @@ export default function solvePuzzle(clues) {
   console.log('  ', [8, 9, 10, 11].map(n => clues[n]).join('  '))
 
   //? First step: check if there are `1` among clues
-  clues = clues.map((clue, index) => {
-    if (clue === 1) {
-      console.log(index)
-    }
+  clues.forEach((clue, idx) => {
+    // console.log("Clue row/col index: ", getCluesFaceIndex(idx))
+    console.log("Top matrix edge index: ", getTopLevelMatrixIdx(idx))
   })
 }
