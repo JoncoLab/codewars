@@ -57,38 +57,35 @@ export const testCases = [
 
 // If the index of the clue is 5 then we're wroking with the right edge of the matrix
 // thus on this side it's true index is 1
-function getCluesEdgeIndex(clueIdx) {
-  return clueIdx % 4
+function getCluesEdgeIndex(clueIndex) {
+  return clueIndex % 4
 }
 
-function getVectorDirection(clueIdx) {
-  return Math.floor(clueIdx / 4) % 2
+function getVectorDirection(vectorIndex) {
+  return vectorIndex % 2
 }
 
-function getMatrixCoordinates(clueIdx) {
-  const vectorDirection = getVectorDirection(clueIdx)
-  const trueIndex = getCluesEdgeIndex(clueIdx)
-
-  if (!!vectorDirection) {
-    if (clueIdx > 7) {
-      // on the left edge
-      return [Math.abs(trueIndex - 3), 0]
-    }
-    return [trueIndex, 3] // on the right edge
+function getMatrixCoordinatesFormulas(trueIndex, vectorIndex, vectorLength) {
+  const formulas = {
+    0: [vectorIndex, trueIndex],
+    1: [trueIndex, vectorLength - 1],
+    2: [vectorLength - 1, Math.abs(trueIndex - (vectorLength - 1))],
+    3: [Math.abs(trueIndex - (vectorLength - 1)), 0]
   }
 
-  if (clueIdx > 3) {
-    // on the bottom edge
-    return [3, Math.abs(trueIndex - 3)]
-  }
-
-  return [0, trueIndex] // on the top edge
+  return formulas;
 }
 
-function getInnerMatrixIdx(clueIdx) {}
+function getMatrixCoordinates(clueIndex, vectorIndex, vectorLength) {
+  const vectorDirection = getVectorDirection(vectorIndex)
+  const trueIndex = getCluesEdgeIndex(clueIndex)
+
+  return getMatrixCoordinatesFormulas(trueIndex, vectorIndex, vectorLength)[vectorIndex]
+}
 
 export default function solvePuzzle(clues) {
-  const field = Array(4).fill(Array(4).fill('-'))
+  const vectorLength = 4
+  const field = Array(vectorLength).fill(Array(vectorLength).fill('-'))
 
   console.group('Initial data:')
   console.log('Clues: ', clues)
@@ -106,8 +103,10 @@ export default function solvePuzzle(clues) {
   console.log('  ', [8, 9, 10, 11].map(n => clues[n]).join('  '))
 
   //? First step: check if there are `1` among clues
-  clues.forEach((clue, idx) => {
-    const [otterIdx, innerIdx] = getMatrixCoordinates(idx)
-    console.log('Matrix edge coordinates: ', otterIdx, innerIdx);
+  clues.forEach((clue, clueIndex) => {
+    const vectorIndex = Math.floor(clueIndex / vectorLength)
+    const [outterIdx, innerIdx] = getMatrixCoordinates(clueIndex, vectorIndex, vectorLength)
+
+    console.log("Matrix coordinates: ", outterIdx, innerIdx)
   })
 }
