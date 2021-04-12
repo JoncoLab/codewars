@@ -58,33 +58,34 @@ export const testCases = [
 // If the index of the clue is 5 then we're wroking with the right edge of the matrix
 // thus on this side it's true index is 1
 function getCluesEdgeIndex(clueIdx) {
-  return clueIdx % 4;
+  return clueIdx % 4
 }
 
 function getVectorDirection(clueIdx) {
-  return Math.floor(clueIdx / 4) % 2;
+  return Math.floor(clueIdx / 4) % 2
 }
 
-function getTopLevelMatrixIdx(clueIdx) {
-  const vectorDirection = getVectorDirection(clueIdx);
+function getMatrixCoordinates(clueIdx) {
+  const vectorDirection = getVectorDirection(clueIdx)
+  const trueIndex = getCluesEdgeIndex(clueIdx)
 
   if (!!vectorDirection) {
-    if (clueIdx > 7) { // on the left edge
-      return Math.abs(getCluesEdgeIndex(clueIdx) - 3);  
+    if (clueIdx > 7) {
+      // on the left edge
+      return [Math.abs(trueIndex - 3), 0]
     }
-    return getCluesEdgeIndex(clueIdx); // on the right edge
+    return [trueIndex, 3] // on the right edge
   }
 
-  if (clueIdx > 3) { // on the bottom edge
-    return 3;
+  if (clueIdx > 3) {
+    // on the bottom edge
+    return [3, Math.abs(trueIndex - 3)]
   }
 
-  return 0; // on the top edge
+  return [0, trueIndex] // on the top edge
 }
 
-function matrixNavigation(clueIdx) {
-  const vectorDirection = getVectorDirection(clueIdx)
-}
+function getInnerMatrixIdx(clueIdx) {}
 
 export default function solvePuzzle(clues) {
   const field = Array(4).fill(Array(4).fill('-'))
@@ -106,7 +107,7 @@ export default function solvePuzzle(clues) {
 
   //? First step: check if there are `1` among clues
   clues.forEach((clue, idx) => {
-    // console.log("Clue row/col index: ", getCluesFaceIndex(idx))
-    console.log("Top matrix edge index: ", getTopLevelMatrixIdx(idx))
+    const [otterIdx, innerIdx] = getMatrixCoordinates(idx)
+    console.log('Matrix edge coordinates: ', otterIdx, innerIdx);
   })
 }
