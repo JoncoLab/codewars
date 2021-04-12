@@ -65,23 +65,58 @@ function getVectorDirection(vectorIndex) {
   return vectorIndex % 2
 }
 
+function reverseIndex(index, vectorLength) {
+  return Math.abs(index - (vectorLength - 1))
+}
+
 function getMatrixCoordinatesFormulas(trueIndex, vectorIndex, vectorLength) {
   const formulas = {
     0: [vectorIndex, trueIndex],
     1: [trueIndex, vectorLength - 1],
-    2: [vectorLength - 1, Math.abs(trueIndex - (vectorLength - 1))],
-    3: [Math.abs(trueIndex - (vectorLength - 1)), 0]
+    2: [vectorLength - 1, reverseIndex(trueIndex, vectorLength)],
+    3: [reverseIndex(trueIndex, vectorLength), 0],
   }
 
-  return formulas;
+  return formulas
 }
 
 function getMatrixCoordinates(clueIndex, vectorIndex, vectorLength) {
   const vectorDirection = getVectorDirection(vectorIndex)
   const trueIndex = getCluesEdgeIndex(clueIndex)
 
-  return getMatrixCoordinatesFormulas(trueIndex, vectorIndex, vectorLength)[vectorIndex]
+  return getMatrixCoordinatesFormulas(trueIndex, vectorIndex, vectorLength)[
+    vectorIndex
+  ]
 }
+
+// WIP, but i think this functionality is redundat so I'm not gonna finish that
+function getOppositeEdgeCoordinates(clueIndex, cluesLength, vectorIndex, vectorLength) {
+  const oppositeClueIndex = (cluesLength - clueIndex) - 1
+  const oppositeVectorIndex = Math.floor(oppositeClueIndex / vectorLength)
+  const trueIndex = getCluesEdgeIndex(clueIndex)
+  const oppositeTrueIndex = getCluesEdgeIndex(oppositeClueIndex)
+  const reversedOppositeTrueIndex = reverseIndex(oppositeTrueIndex, vectorLength) // yeah, I know...
+  const vectorDirection = getVectorDirection(vectorIndex)
+  
+  if (!vectorDirection) {
+    return [oppositeVectorIndex, trueIndex]
+  }
+  
+  return [reversedOppositeTrueIndex]
+}
+
+// give it a coordinates where to start from, 
+// tell what direction the vector is facing and say how far you need to go
+//                         [ 3, 2 ]           0              3
+function vectorNavigation(coordinates, vectorDirection, targetIndex) {
+  const targetCoordinates = [ ...coordinates ]
+  targetCoordinates[vectorDirection] = Math.abs(targetCoordinates[vectorDirection] - targetIndex)
+  
+  return targetCoordinates
+}
+
+// const navigationTest = vectorNavigation([0, 3], 1, 3)
+// console.log(navigationTest)
 
 export default function solvePuzzle(clues) {
   const vectorLength = 4
@@ -105,8 +140,18 @@ export default function solvePuzzle(clues) {
   //? First step: check if there are `1` among clues
   clues.forEach((clue, clueIndex) => {
     const vectorIndex = Math.floor(clueIndex / vectorLength)
-    const [outterIdx, innerIdx] = getMatrixCoordinates(clueIndex, vectorIndex, vectorLength)
+    const [outterIdx, innerIdx] = getMatrixCoordinates(
+      clueIndex,
+      vectorIndex,
+      vectorLength
+    )
+    const op = getOppositeEdgeCoordinates(
+      clueIndex,
+      clues.length,
+      vectorIndex,
+      vectorLength
+    )
 
-    console.log("Matrix coordinates: ", outterIdx, innerIdx)
+    console.log('Matrix coordinates: ', outterIdx, innerIdx, ' Opposite: ', op)
   })
 }
