@@ -27,7 +27,7 @@
   ! Similar katas collection
 */
 
-export const testCases = [
+const testCases = [
   {
     input: [2, 2, 1, 3, 2, 2, 3, 1, 1, 2, 2, 3, 3, 2, 1, 3],
     expectedOutput: [
@@ -53,9 +53,8 @@ export const testCases = [
  * @param {string[]} clues - Pass the clues in an array of 16 items. This array contains the clues around the clock. If no clue is available, add value 0.
  * @returns {number[][]} The first indexer is for the row, the second indexer for the column.
  */
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 
-// If the index of the clue is 5 then we're wroking with the right edge of the matrix
+// If the index of the clue is 5 then we're working with the right edge of the matrix
 // thus on this side it's true index is 1
 function getCluesEdgeIndex(clueIndex) {
   return clueIndex % 4
@@ -81,7 +80,7 @@ function getMatrixCoordinatesFormulas(trueIndex, vectorIndex, vectorLength) {
 }
 
 function getMatrixCoordinates(clueIndex, vectorIndex, vectorLength) {
-  const vectorDirection = getVectorDirection(vectorIndex)
+  const _vectorDirection = getVectorDirection(vectorIndex)
   const trueIndex = getCluesEdgeIndex(clueIndex)
 
   return getMatrixCoordinatesFormulas(trueIndex, vectorIndex, vectorLength)[
@@ -89,41 +88,73 @@ function getMatrixCoordinates(clueIndex, vectorIndex, vectorLength) {
   ]
 }
 
-// WIP, but i think this functionality is redundat so I'm not gonna finish that
-function getOppositeEdgeCoordinates(clueIndex, cluesLength, vectorIndex, vectorLength) {
-  const oppositeClueIndex = (cluesLength - clueIndex) - 1
+// WIP, but i think this functionality is redundant so I'm not gonna finish that
+function _getOppositeEdgeCoordinates(
+  clueIndex,
+  cluesLength,
+  vectorIndex,
+  vectorLength
+) {
+  const oppositeClueIndex = cluesLength - clueIndex - 1
   const oppositeVectorIndex = Math.floor(oppositeClueIndex / vectorLength)
   const trueIndex = getCluesEdgeIndex(clueIndex)
   const oppositeTrueIndex = getCluesEdgeIndex(oppositeClueIndex)
-  const reversedOppositeTrueIndex = reverseIndex(oppositeTrueIndex, vectorLength) // yeah, I know...
+  const reversedOppositeTrueIndex = reverseIndex(
+    oppositeTrueIndex,
+    vectorLength
+  ) // yeah, I know...
   const vectorDirection = getVectorDirection(vectorIndex)
-  
+
   if (!vectorDirection) {
     return [oppositeVectorIndex, trueIndex]
   }
-  
+
   return [reversedOppositeTrueIndex]
 }
 
-// give it a coordinates where to start from, 
+// give it a coordinates where to start from,
 // tell what direction the vector is facing and say how far you need to go
 //                         [ 3, 2 ]           0              3
-function vectorNavigation(coordinates, vectorDirection, targetIndex) {
-  const targetCoordinates = [ ...coordinates ]
-  targetCoordinates[vectorDirection] = Math.abs(targetCoordinates[vectorDirection] - targetIndex)
-  
+function vectorNavigation(coordinates, vectorDirection, targetIndex = null) {
+  const targetCoordinates = [...coordinates]
+  targetCoordinates[vectorDirection] = Math.abs(
+    targetCoordinates[vectorDirection] -
+      (targetIndex ?? targetCoordinates[vectorDirection])
+  )
+
   return targetCoordinates
+}
+
+function _vectorProgress(
+  field,
+  coordinates,
+  vectorDirection,
+  vectorLength,
+  progress = []
+) {
+  if (progress.length === vectorLength) {
+    const validProgress = progress.filter(n => Number.isInteger(n)).length
+    return {
+      vector: {
+        start: coordinates,
+        direction: vectorDirection,
+      },
+      data: {
+        total: validProgress.length,
+        missing: [...new Set([...validProgress, [1, 2, 3, 4]])],
+      },
+    }
+  }
+
+  const nextProgress = [...progress]
+  const [_x, _y] = vectorNavigation(coordinates, vectorDirection)
+  nextProgress.push()
 }
 
 // const navigationTest = vectorNavigation([0, 3], 1, 3)
 // console.log(navigationTest)
 
-export default function solvePuzzle(clues) {
-  const vectorLength = 4
-  const field = Array(vectorLength).fill(Array(vectorLength).fill('-'))
-
-  console.group('Initial data:')
-  console.log('Clues: ', clues)
+function renderTable(clues, field) {
   console.log('\r\nField:')
   console.log('  ', [0, 1, 2, 3].map(n => clues[n]).join('  '))
   field.forEach((row, index) =>
@@ -136,22 +167,33 @@ export default function solvePuzzle(clues) {
     )
   )
   console.log('  ', [8, 9, 10, 11].map(n => clues[n]).join('  '))
+}
+
+/**
+ * @param {number[]} clues
+ * @returns void
+ */
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+function solvePuzzle(clues) {
+  const vectorLength = 4
+  const field = Array(vectorLength).fill(Array(vectorLength).fill('-'))
+
+  console.group('Initial data:')
+  console.log('Clues: ', clues)
+  renderTable(clues, field)
 
   //? First step: check if there are `1` among clues
   clues.forEach((clue, clueIndex) => {
     const vectorIndex = Math.floor(clueIndex / vectorLength)
-    const [outterIdx, innerIdx] = getMatrixCoordinates(
+    const [_outterIdx, _innerIdx] = getMatrixCoordinates(
       clueIndex,
       vectorIndex,
       vectorLength
     )
-    const op = getOppositeEdgeCoordinates(
-      clueIndex,
-      clues.length,
-      vectorIndex,
-      vectorLength
-    )
-
-    console.log('Matrix coordinates: ', outterIdx, innerIdx, ' Opposite: ', op)
   })
+
+  renderTable(clues, field)
 }
+
+export { testCases }
+export default solvePuzzle

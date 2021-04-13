@@ -1,5 +1,6 @@
 import fs from 'fs'
 import readline from 'readline'
+
 import runKata from './scripts/runKata'
 
 const KataLang = {

@@ -55,7 +55,7 @@ rules:
     - never
   no-unused-vars:
     - error
-    - { varsIgnorePattern: ^_, argsIgnorePattern: ^_, vars: local }
+    - { varsIgnorePattern: ^_, argsIgnorePattern: ^_ }
   '@typescript-eslint/no-unused-vars':
     - warn
-    - { varsIgnorePattern: ^_, argsIgnorePattern: ^_, vars: local }
+    - { varsIgnorePattern: ^_, argsIgnorePattern: ^_ }
