@@ -119,7 +119,7 @@ function vectorNavigation(coordinates, vectorDirection, targetIndex = null) {
   const targetCoordinates = [...coordinates]
   targetCoordinates[vectorDirection] = Math.abs(
     targetCoordinates[vectorDirection] -
-      (targetIndex ?? targetCoordinates[vectorDirection])
+      (targetIndex ? targetIndex : targetCoordinates[vectorDirection])
   )
 
   return targetCoordinates
@@ -155,7 +155,7 @@ function _vectorProgress(
 // console.log(navigationTest)
 
 function renderTable(clues, field) {
-  console.log('\r\nField:')
+  console.log('Field:')
   console.log('  ', [0, 1, 2, 3].map(n => clues[n]).join('  '))
   field.forEach((row, index) =>
     console.log(
@@ -166,8 +166,10 @@ function renderTable(clues, field) {
       String(clues[4 + index])
     )
   )
-  console.log('  ', [8, 9, 10, 11].map(n => clues[n]).join('  '))
+  console.log('  ', [11, 10, 9, 8].map(n => clues[n]).join('  '))
 }
+
+// TODO: create function* cycleThroughClues() generator and yield on patterns
 
 /**
  * @param {number[]} clues
@@ -176,24 +178,63 @@ function renderTable(clues, field) {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 function solvePuzzle(clues) {
   const vectorLength = 4
-  const field = Array(vectorLength).fill(Array(vectorLength).fill('-'))
+  let field = Array(vectorLength).fill(Array(vectorLength).fill('-'))
 
   console.group('Initial data:')
-  console.log('Clues: ', clues)
+  console.log('Clues: ', clues, '\n')
   renderTable(clues, field)
 
   //? First step: check if there are `1` among clues
   clues.forEach((clue, clueIndex) => {
     const vectorIndex = Math.floor(clueIndex / vectorLength)
-    const [_outterIdx, _innerIdx] = getMatrixCoordinates(
+    const [outterIdx, innerIdx] = getMatrixCoordinates(
       clueIndex,
       vectorIndex,
       vectorLength
     )
-  })
 
-  renderTable(clues, field)
+    switch (clue) {
+      case 1:
+        console.log(
+          `\n===>> set cell (r${outterIdx}:c${innerIdx}) to a value 4`
+        )
+
+        field = field.map((row, index) =>
+          index !== outterIdx
+            ? row
+            : row.map((cell, index) => (index !== innerIdx ? cell : 4))
+        )
+
+        renderTable(clues, field)
+        clues[clueIndex] = '-'
+        break
+      case 2:
+      // TODO: create a function to get vector in [clue, [vector values: [coordinates], value], clue] format
+      case 3:
+      case 4:
+      default:
+        console.log('===>> no pattern')
+    }
+  })
 }
 
 export { testCases }
 export default solvePuzzle
+
+function _getVector(clueIndex) {
+  const vectorLength = 4
+  const vectorDirection = Math.floor(clueIndex / vectorLength) % 2
+  const isVectorReversed = vectorLength <= clueIndex <= 15 - vectorLength
+  const verticalIdxs = isVectorReversed ? [3, 2, 1, 0] : [0, 1, 2, 3]
+  const horizontalIdxs = Array(4).fill(clueIndex)
+  const oppositeClueIndex =
+    15 - clueIndex + (vectorDirection ? vectorLength : -1 * vectorLength)
+  const row = vectorDirection ? verticalIdxs : horizontalIdxs
+  const col = vectorDirection ? horizontalIdxs : verticalIdxs
+
+  return [
+    clues[clueIndex],
+    [0, 1, 2, 3].map(n => [row[n], col[n]], field[row[n]][col[n]]),
+    clues[oppositeClueIndex],
+  ]
+}
