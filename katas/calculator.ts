@@ -1,4 +1,4 @@
-export const testCases = [
+const testCases = [
   {
     input: '',
     expectedOutput: '',
@@ -8,7 +8,7 @@ export const testCases = [
 declare type operadns = string | string[] | number | number[]
 
 declare type CalculatorConstructor = NewableFunction & {
-  evaluate(str: string): number
+  evaluate(_str: string): number
 }
 
 function Calculator(this: CalculatorConstructor): void {
@@ -50,4 +50,5 @@ function Calculator(this: CalculatorConstructor): void {
   }
 }
 
+export { testCases }
 export default Calculator

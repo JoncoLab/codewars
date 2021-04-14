@@ -19,7 +19,7 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "typeRoots": ["./types", "./katas"],
+    "typeRoots": ["./types"],
     "types": ["node"]
   }
 }
